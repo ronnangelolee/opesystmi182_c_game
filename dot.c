@@ -21,6 +21,7 @@ int main() {
     sprintf(screenString, "%c", (char)82);
 
     while (windowActive) {
+        getmaxyx(stdscr, screenY, screenX);
         clear();
         mvprintw(dotPosY, dotPosX, screenString);
         refresh();
