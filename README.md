@@ -12,3 +12,5 @@ NCurses game tutorials:
 Game Suggestions
 - Tic-tac-toe
 - Jackenpoy
+
+> Game difficulty will be incorporated into the grade for this assignment
