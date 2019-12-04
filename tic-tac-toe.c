@@ -89,12 +89,30 @@ int main() {
                         printChar = '=';
                     } else if(x % ((tableWidth-1) / 3) == 0) {
                         printChar = '|';
+                    } else if(y == (selectorY * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6)) && x == (selectorX * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6))) {
+                        printChar = '+';
                     } else {
                         printChar = ' ';
                     }
 
                     mvprintw(gridTopRow + y, gridLeastColumn + x, "%c", printChar);
                 }
+            }
+
+            if(keyInput == KEY_DOWN && selectorY < 3) {
+                selectorY = selectorY + 1;
+            }
+
+            if(keyInput == KEY_UP && selectorY > 1) {
+                selectorY = selectorY - 1;
+            }
+
+            if(keyInput == KEY_RIGHT && selectorX < 3) {
+                selectorX = selectorX + 1;
+            }
+
+            if(keyInput == KEY_LEFT && selectorX > 1) {
+                selectorX = selectorX - 1;
             }
 
         }
