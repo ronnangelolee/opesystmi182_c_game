@@ -13,6 +13,7 @@ int main() {
     int selectorX = 1;
 
     bool windowActive = TRUE;
+    int windowState = 0;
 
     initscr();
     cbreak();
@@ -24,15 +25,36 @@ int main() {
         getmaxyx(stdscr, screenY, screenX);
         int keyInput = getch();
 
-        clear();
-
         if(screenX < strlen(movementInstruction) && screenY < 9) {
+            if(windowState != 1) {
+                windowState = 1;
+                clear();
+            }
+
             mvprintw(screenY/2, (screenX - strlen("Expand window height and width."))/2, "Expand window height and width.");
+
         } else if(screenX < strlen(movementInstruction)) {
+            if(windowState != 2) {
+                windowState = 2;
+                clear();
+            }
+
             mvprintw(screenY/2, (screenX - strlen("Expand window width."))/2, "Expand window width.");
+
         } else if(screenY < 9) {
+            if(windowState != 3) {
+                windowState = 3;
+                clear();
+            }
+
             mvprintw(screenY/2, (screenX - strlen("Expand window height."))/2, "Expand window height.");
+
         } else {
+            if(windowState != 4) {
+                windowState = 4;
+                clear();
+            }
+
             mvprintw(0, 0, "%s", movementInstruction);
             mvprintw(1, 0, "%s", turnInstruction);
             mvprintw(2, 0, "%s", exitInstruction);
@@ -40,9 +62,8 @@ int main() {
             for(int x = 0; x < screenX - 1; x++) {
                 mvprintw(3, x, "-");
             }
-        }
 
-        refresh();
+        }
 
         if(keyInput == '`' || keyInput == '~') {
             windowActive = FALSE;
