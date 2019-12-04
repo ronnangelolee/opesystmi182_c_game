@@ -11,9 +11,13 @@ int main() {
     char movementInstruction[] = "The + symbols indicates the selected cell. Use arrow keys to navigate.";
     char turnInstruction[] = "Press enter (return) to make a turn.";
     char exitInstruction[] = "Press ~ to exit.";
+    int ribbonHeight = 4;
 
     int selectorY = 1;
     int selectorX = 1;
+
+    int tableHeight = 7;
+    int tableWidth = 13;
 
     bool windowActive = TRUE;
     int windowState = 0;
@@ -23,12 +27,13 @@ int main() {
     noecho();
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
+    curs_set(0);
 
     while(windowActive) {
         getmaxyx(stdscr, screenY, screenX);
         int keyInput = getch();
 
-        if(screenX < strlen(movementInstruction) && screenY < 9) {
+        if(screenX < strlen(movementInstruction) && screenY < ribbonHeight + tableHeight) {
             if(windowState != 1 || screenY != currScreenY || screenX != currScreenX) {
                 windowState = 1;
                 clear();
@@ -48,7 +53,7 @@ int main() {
 
             mvprintw(screenY/2, (screenX - strlen("Expand window width."))/2, "Expand window width.");
 
-        } else if(screenY < 9) {
+        } else if(screenY < ribbonHeight + tableHeight) {
             if(windowState != 3 || screenY != currScreenY || screenX != currScreenX) {
                 windowState = 3;
                 clear();
@@ -70,8 +75,26 @@ int main() {
             mvprintw(1, 0, "%s", turnInstruction);
             mvprintw(2, 0, "%s", exitInstruction);
 
-            for(int x = 0; x < screenX; x++) {
-                mvprintw(3, x, "-");
+            for(int x = 0; x < screenX - 1; x++) {
+                mvprintw(ribbonHeight - 1, x, "-");
+            }
+
+            int gridTopRow = ((screenY - ribbonHeight) - tableHeight)/2 + ribbonHeight;
+            int gridLeastColumn = (screenX - tableWidth)/2;
+            for(int y = 0; y < tableHeight; y++) {
+                for(int x = 0; x < tableWidth; x++) {
+                    char printChar = ' ';
+
+                    if((y + 1) % 2 != 0) {
+                        printChar = '=';
+                    } else if(x % ((tableWidth-1) / 3) == 0) {
+                        printChar = '|';
+                    } else {
+                        printChar = ' ';
+                    }
+
+                    mvprintw(gridTopRow + y, gridLeastColumn + x, "%c", printChar);
+                }
             }
 
         }
