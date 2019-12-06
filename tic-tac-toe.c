@@ -16,6 +16,8 @@ int main() {
     int selectorY = 1;
     int selectorX = 1;
 
+    int player[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+
     int tableHeight = 7;
     int tableWidth = 13;
 
@@ -87,7 +89,7 @@ int main() {
                     char printChar = ' ';
 
                     if((y + 1) % 2 != 0) {
-                        printChar = '=';
+                        printChar = '-';
                     } else if(x % ((tableWidth-1) / 3) == 0) {
                         printChar = '|';
                     } else if(y == (selectorY * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6)) && x == (selectorX * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6))) {
@@ -97,6 +99,14 @@ int main() {
                     }
 
                     mvprintw(gridTopRow + y, gridLeastColumn + x, "%c", printChar);
+                }
+            }
+
+            for(int y = 0; y < 3; y++) {
+                for(int x = 0; x < 3; x++) {
+                    if(player[y][x] == 1) {
+                        mvprintw(gridTopRow + (y + 1) * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6), gridLeastColumn + (x + 1) * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6), "X");
+                    }
                 }
             }
         }
@@ -117,6 +127,10 @@ int main() {
             selectorX = selectorX - 1;
         }
 
+        if(keyInput == ((char)10)) {
+            player[selectorY - 1][selectorX - 1] = 1;
+        }
+
         if(keyInput == '`' || keyInput == '~') {
             windowActive = FALSE;
         }
@@ -125,3 +139,4 @@ int main() {
     endwin();
     return 0;
 }
+
