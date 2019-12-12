@@ -11,7 +11,7 @@ int main() {
 
     char movementInstruction[] = "The + symbols indicates the selected cell. Use arrow keys to navigate.";
     char turnInstruction[] = "Press enter (return) to make a turn.";
-    char exitInstruction[] = "Press ~ to exit.";
+    char exitInstruction[] = "Press ~ to exit. Press r to restart.";
     int ribbonHeight = 4;
 
     int playerTurn = 1;
@@ -24,6 +24,8 @@ int main() {
 
     int player[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     int computer[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    int randomY = rand() % 3;
+    int randomX = rand() % 3;
 
     int tableHeight = 7;
     int tableWidth = 13;
@@ -134,7 +136,18 @@ int main() {
             selectorX = selectorX - 1;
         }
 
-        if(keyInput == ((char)10) && player[selectorY - 1][selectorX - 1] == 0 && playerTurn == 1) {
+        if(keyInput == 'r' || keyInput == 'R') {
+            for(int y = 0; y < 3; y++) {
+                for(int x = 0; x < 3; x++) {
+                    player[y][x] = 0;
+                    computer[y][x] = 0;
+                }
+            }
+
+            playerTurns = 0;
+        }
+
+        if(keyInput == ((char)10) && player[selectorY - 1][selectorX - 1] == 0 && playerTurn == 1 && computer[selectorY - 1][selectorX - 1] == 0) {
             player[selectorY - 1][selectorX - 1] = 1;
             playerTurn = 0;
             playerTurns = playerTurns + 1;
@@ -144,10 +157,9 @@ int main() {
             windowActive = FALSE;
         }
 
+        randomY = rand() % 3;
+        randomX = rand() % 3;
         if(playerTurn == 0 && playerTurns < 5) {
-            int randomY = rand() % 3;
-            int randomX = rand() % 3;
-
             while(player[randomY][randomX] == 1 || computer[randomY][randomX] == 1) {
                 randomY = rand() % 3;
                 randomX = rand() % 3;
