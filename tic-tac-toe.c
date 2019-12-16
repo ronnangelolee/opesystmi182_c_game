@@ -75,43 +75,47 @@ int main() {
 
                 mvprintw(screenY/2, (screenX - strlen("Expand window height."))/2, "Expand window height.");
             }
-        } else if(playerWin == 1) {
-            if(windowState != 5 || screenY != currScreenY || screenX != currScreenX) {
-                windowState = 5;
-                clear();
-
-                currScreenY = screenY;
-                currScreenX = screenX;
-
-                mvprintw((screenY - 2)/2, (screenX - strlen("You win. Good job."))/2, "You win. Good job.");
-                mvprintw((screenY - 2)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to restart."))/2, "Press ~ to exit. Press r to restart.");
-            }
-        } else if(computerWin == 1) {
-            if(windowState != 6 || screenY != currScreenY || screenX != currScreenX) {
-                windowState = 6;
-                clear();
-
-                currScreenY = screenY;
-                currScreenX = screenX;
-
-                mvprintw((screenY - 2)/2, (screenX - strlen("You lose. Try again."))/2, "You lose. Try again.");
-                mvprintw((screenY - 2)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to play again."))/2, "Press ~ to exit. Press r to play again.");
-            }
         } else {
-            if(windowState != 4 || screenY != currScreenY || screenX != currScreenX) {
+            if(playerWin == 1 && windowState != 4) {
                 windowState = 4;
                 clear();
 
                 currScreenY = screenY;
                 currScreenX = screenX;
 
-                mvprintw(0, 0, "%s", movementInstruction);
-                mvprintw(1, 0, "%s", turnInstruction);
-                mvprintw(2, 0, "%s", exitInstruction);
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2, (screenX - strlen("You win. Good job."))/2, "You win. Good job.");
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to restart."))/2, "Press ~ to exit. Press r to restart.");
 
-                for(int x = 0; x < screenX - 1; x++) {
-                    mvprintw(ribbonHeight - 1, x, "-");
-                }
+            } else if(computerWin == 1 && windowState != 5) {
+                windowState = 5;
+                clear();
+
+                currScreenY = screenY;
+                currScreenX = screenX;
+
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2, (screenX - strlen("You lose. Try again."))/2, "You lose. Try again.");
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to play again."))/2, "Press ~ to exit. Press r to play again.");
+
+            } else if(playerTurns >= 5 && windowState != 6 && playerWin != 1 && computerWin != 1) {
+                windowState = 6;
+                clear();
+
+                currScreenY = screenY;
+                currScreenX = screenX;
+
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2, (screenX - strlen("It's a draw. Try harder."))/2, "It's a draw. Try harder.");
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to play again."))/2, "Press ~ to exit. Press r to play again.");
+
+            } else if((windowState != 7 || screenY != currScreenY || screenX != currScreenX) && playerWin != 1 && computerWin != 1 && playerTurns < 5) {
+                windowState = 7;
+                clear();
+
+                currScreenY = screenY;
+                currScreenX = screenX;
+
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2, (screenX - strlen(movementInstruction))/2, "%s", movementInstruction);
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2 + 1, (screenX - strlen(turnInstruction))/2, "%s", turnInstruction);
+                mvprintw(((screenY - ribbonHeight) - tableHeight)/2 + 2, (screenX - strlen(exitInstruction))/2, "%s", exitInstruction);
             }
 
             int gridTopRow = ((screenY - ribbonHeight) - tableHeight)/2 + ribbonHeight;
@@ -143,22 +147,21 @@ int main() {
             }
         }
 
+        // movement
         if(keyInput == KEY_DOWN && selectorY < 3) {
             selectorY = selectorY + 1;
         }
-
         if(keyInput == KEY_UP && selectorY > 1) {
             selectorY = selectorY - 1;
         }
-
         if(keyInput == KEY_RIGHT && selectorX < 3) {
             selectorX = selectorX + 1;
         }
-
         if(keyInput == KEY_LEFT && selectorX > 1) {
             selectorX = selectorX - 1;
         }
 
+        // restart game
         if(keyInput == 'r' || keyInput == 'R') {
             for(int y = 0; y < 3; y++) {
                 for(int x = 0; x < 3; x++) {
@@ -173,19 +176,38 @@ int main() {
             computerWin = 0;
         }
 
-        if(keyInput == ((char)10) && player[selectorY - 1][selectorX - 1] == 0 && playerTurn == 1 && computer[selectorY - 1][selectorX - 1] == 0) {
+        // player turn
+        if(keyInput == ((char)10) && player[selectorY - 1][selectorX - 1] == 0 && playerTurn == 1 && computer[selectorY - 1][selectorX - 1] == 0 && playerWin != 1 && computerWin != 1) {
             player[selectorY - 1][selectorX - 1] = 1;
             playerTurn = 0;
             playerTurns = playerTurns + 1;
         }
 
+        // exit game
         if(keyInput == '`' || keyInput == '~') {
             windowActive = FALSE;
         }
 
+        // check if win
+        if(playerWin != 1 || computerWin != 1) {
+            for(int y = 0; y < 3; y++) {
+                if((player[y][0] == 1 && player[y][1] == 1 && player[y][2] == 1) || (player[0][y] == 1 && player[1][y] == 1 && player[2][y] == 1)) {
+                    playerWin = 1;
+                } else if((computer[y][0] == 1 && computer[y][1] == 1 && computer[y][2] == 1) || (computer[0][y] == 1 && computer[1][y] == 1 && computer[2][y] == 1)) {
+                    computerWin = 1;
+                }
+            }
+
+            if((player[0][0] == 1 && player[1][1] == 1 && player[2][2] == 1) || (player[0][2] == 1 && player[1][1] == 1 && player[2][0] == 1)) {
+                playerWin = 1;
+            } else if((computer[0][0] == 1 && computer[1][1] == 1 && computer[2][2] == 1) || (computer[0][2] == 1 && computer[1][1] == 1 && computer[2][0] == 1)) {
+                computerWin = 1;
+            }
+        }
+
         randomY = rand() % 3;
         randomX = rand() % 3;
-        if(playerTurn == 0 && playerTurns < 5) {
+        if(playerTurn == 0 && playerTurns < 5 && playerWin != 1 && computerWin != 1) {
             while(player[randomY][randomX] == 1 || computer[randomY][randomX] == 1) {
                 randomY = rand() % 3;
                 randomX = rand() % 3;
@@ -196,6 +218,7 @@ int main() {
             playerTurn = 1;
         }
 
+        // check if win
         if(playerWin != 1 || computerWin != 1) {
             for(int y = 0; y < 3; y++) {
                 if((player[y][0] == 1 && player[y][1] == 1 && player[y][2] == 1) || (player[0][y] == 1 && player[1][y] == 1 && player[2][y] == 1)) {
