@@ -9,7 +9,7 @@ int main() {
     int currScreenY = 0;
     int currScreenX = 0;
 
-    char movementInstruction[] = "The + symbols indicates the selected cell. Use arrow keys to navigate.";
+    char movementInstruction[] = "The | | symbols indicates the selected cell. Use arrow keys to navigate.";
     char turnInstruction[] = "Press enter (return) to make a turn.";
     char exitInstruction[] = "Press ~ to exit. Press r to restart.";
     int ribbonHeight = 4;
