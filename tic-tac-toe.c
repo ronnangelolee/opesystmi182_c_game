@@ -17,8 +17,6 @@ int main() {
     int playerTurn = 1;
     int playerTurns = 0;
 
-    int test = 0;
-
     int selectorY = 1;
     int selectorX = 1;
 
@@ -26,6 +24,9 @@ int main() {
     int computer[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     int randomY = rand() % 3;
     int randomX = rand() % 3;
+
+    int playerWin = 0;
+    int computerWin = 0;
 
     int tableHeight = 7;
     int tableWidth = 13;
@@ -73,6 +74,28 @@ int main() {
                 currScreenX = screenX;
 
                 mvprintw(screenY/2, (screenX - strlen("Expand window height."))/2, "Expand window height.");
+            }
+        } else if(playerWin == 1) {
+            if(windowState != 5 || screenY != currScreenY || screenX != currScreenX) {
+                windowState = 5;
+                clear();
+
+                currScreenY = screenY;
+                currScreenX = screenX;
+
+                mvprintw((screenY - 2)/2, (screenX - strlen("You win. Good job."))/2, "You win. Good job.");
+                mvprintw((screenY - 2)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to restart."))/2, "Press ~ to exit. Press r to restart.");
+            }
+        } else if(computerWin == 1) {
+            if(windowState != 6 || screenY != currScreenY || screenX != currScreenX) {
+                windowState = 6;
+                clear();
+
+                currScreenY = screenY;
+                currScreenX = screenX;
+
+                mvprintw((screenY - 2)/2, (screenX - strlen("You lose. Try again."))/2, "You lose. Try again.");
+                mvprintw((screenY - 2)/2 + 1, (screenX - strlen("Press ~ to exit. Press r to play again."))/2, "Press ~ to exit. Press r to play again.");
             }
         } else {
             if(windowState != 4 || screenY != currScreenY || screenX != currScreenX) {
@@ -144,7 +167,10 @@ int main() {
                 }
             }
 
+            playerTurn = 1;
             playerTurns = 0;
+            playerWin = 0;
+            computerWin = 0;
         }
 
         if(keyInput == ((char)10) && player[selectorY - 1][selectorX - 1] == 0 && playerTurn == 1 && computer[selectorY - 1][selectorX - 1] == 0) {
@@ -168,6 +194,22 @@ int main() {
             computer[randomY][randomX] = 1;
 
             playerTurn = 1;
+        }
+
+        if(playerWin != 1 || computerWin != 1) {
+            for(int y = 0; y < 3; y++) {
+                if((player[y][0] == 1 && player[y][1] == 1 && player[y][2] == 1) || (player[0][y] == 1 && player[1][y] == 1 && player[2][y] == 1)) {
+                    playerWin = 1;
+                } else if((computer[y][0] == 1 && computer[y][1] == 1 && computer[y][2] == 1) || (computer[0][y] == 1 && computer[1][y] == 1 && computer[2][y] == 1)) {
+                    computerWin = 1;
+                }
+            }
+
+            if((player[0][0] == 1 && player[1][1] == 1 && player[2][2] == 1) || (player[0][2] == 1 && player[1][1] == 1 && player[2][0] == 1)) {
+                playerWin = 1;
+            } else if((computer[0][0] == 1 && computer[1][1] == 1 && computer[2][2] == 1) || (computer[0][2] == 1 && computer[1][1] == 1 && computer[2][0] == 1)) {
+                computerWin = 1;
+            }
         }
     }
 
