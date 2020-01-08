@@ -2,6 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct{int y, x;} playerSelector;
+
+playerSelector movePlayer1(int keyInput, playerSelector coordinate) {
+    // movement
+    if(keyInput == KEY_DOWN && coordinate.y < 3) {
+        coordinate.y = coordinate.y + 1;
+    }
+    if(keyInput == KEY_UP && coordinate.y > 1) {
+        coordinate.y = coordinate.y - 1;
+    }
+    if(keyInput == KEY_RIGHT && coordinate.x < 3) {
+        coordinate.x = coordinate.x + 1;
+    }
+    if(keyInput == KEY_LEFT && coordinate.x > 1) {
+        coordinate.x = coordinate.x - 1;
+    }
+
+    return coordinate;
+}
+
 int main() {
     int screenY = 0;
     int screenX = 0;
@@ -17,8 +37,7 @@ int main() {
     int playerTurn = 1;
     int playerTurns = 0;
 
-    int selectorY = 1;
-    int selectorX = 1;
+    playerSelector selector = {1, 1};
 
     int player[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     int computer[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
@@ -126,9 +145,9 @@ int main() {
                         mvprintw(gridTopRow + y, gridLeastColumn + x, "-");
                     } else if(x % ((tableWidth-1) / 3) == 0) {
                         mvprintw(gridTopRow + y, gridLeastColumn + x, "|");
-                    } else if(y == (selectorY * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6)) && x == (selectorX * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6)) - 1) {
+                    } else if(y == (selector.y * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6)) && x == (selector.x * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6)) - 1) {
                         mvprintw(gridTopRow + y, gridLeastColumn + x, "|");
-                    } else if(y == (selectorY * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6)) && x == (selectorX * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6)) + 1) {
+                    } else if(y == (selector.y * ((tableHeight - 1) / 3) - ((tableHeight - 1) / 6)) && x == (selector.x * ((tableWidth - 1) / 3) - ((tableWidth - 1) / 6)) + 1) {
                         mvprintw(gridTopRow + y, gridLeastColumn + x, "|");
                     } else {
                         mvprintw(gridTopRow + y, gridLeastColumn + x, " ");
@@ -148,18 +167,7 @@ int main() {
         }
 
         // movement
-        if(keyInput == KEY_DOWN && selectorY < 3) {
-            selectorY = selectorY + 1;
-        }
-        if(keyInput == KEY_UP && selectorY > 1) {
-            selectorY = selectorY - 1;
-        }
-        if(keyInput == KEY_RIGHT && selectorX < 3) {
-            selectorX = selectorX + 1;
-        }
-        if(keyInput == KEY_LEFT && selectorX > 1) {
-            selectorX = selectorX - 1;
-        }
+        selector = movePlayer1(keyInput, selector);
 
         // restart game
         if(keyInput == 'r' || keyInput == 'R') {
@@ -177,8 +185,8 @@ int main() {
         }
 
         // player turn
-        if(keyInput == ((char)10) && player[selectorY - 1][selectorX - 1] == 0 && playerTurn == 1 && computer[selectorY - 1][selectorX - 1] == 0 && playerWin != 1 && computerWin != 1) {
-            player[selectorY - 1][selectorX - 1] = 1;
+        if(keyInput == ((char)10) && player[selector.y - 1][selector.x - 1] == 0 && playerTurn == 1 && computer[selector.y - 1][selector.x - 1] == 0 && playerWin != 1 && computerWin != 1) {
+            player[selector.y - 1][selector.x - 1] = 1;
             playerTurn = 0;
             playerTurns = playerTurns + 1;
         }
@@ -239,4 +247,3 @@ int main() {
     endwin();
     return 0;
 }
-
